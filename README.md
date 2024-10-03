@@ -41,4 +41,4 @@ This project automates the installation of fonts on Windows using PowerShell. It
 If you'd like to contribute to the project, please fork the repository and submit a pull request.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/licenses/MIT) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/d3faultdata/InstantFontInstaller/blob/main/LICENSE) file for details.
