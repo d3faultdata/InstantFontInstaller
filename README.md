@@ -13,17 +13,24 @@ This project automates the installation of fonts on Windows using PowerShell. It
 - Administrator privileges to install fonts.
 
 ## Setup Instructions:
-1. **Clone the repository:**
+1. **Navigate to your desired location using a terminal:**
+   - Use the `cd` command to change directories. For example:
+     - If you want to navigate to a folder named "Projects" on your C drive, use:
+       ```bash
+       cd C:\path\to\Projects
+       ```
+   - Replace `C:\path\to\Projects` with the actual path where you want to clone the repository.
+
+2. **Clone the repository:**
+   Use the following command to clone the repository:
    ```bash
    git clone https://github.com/d3faultdata/InstantFontInstaller.git
-   cd InstantFontInstaller
-   ```
 
-2. **Configure the font management settings:**
+3. **Configure the font management settings:**
    - The first time you run the installation script, you will be guided through the configuration process.
-   - During this process, specify the path where your font zip files will be stored. All other settings will be set to default.
+   - During this process, specify the path where your font zip files will be stored.
 
-3. **Run the font installation script:**
+4. **Run the font installation script:**
    - Simply double-click the RunInstallFonts.bat file to execute the installation process.
 
 ## Usage Instructions:
