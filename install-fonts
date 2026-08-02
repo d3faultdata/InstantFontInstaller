@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Thin launcher for Linux/macOS. Installs fonts per-user (no admin needed).
+set -euo pipefail
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if command -v python3 >/dev/null 2>&1; then
+    exec python3 "$DIR/install_fonts.py" "$@"
+elif command -v python >/dev/null 2>&1; then
+    exec python "$DIR/install_fonts.py" "$@"
+else
+    echo "Python 3 was not found. Please install it and try again." >&2
+    exit 1
+fi

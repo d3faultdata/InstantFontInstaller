@@ -3,3 +3,7 @@ config.json
 
 # Runtime output
 logs/
+
+# Python
+__pycache__/
+*.pyc
