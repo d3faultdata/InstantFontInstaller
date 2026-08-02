@@ -1,44 +1,47 @@
 # Instant Font Installer
 
-This project automates the installation of fonts on Windows using PowerShell. It unzips font files, installs them, and logs the process. 
+Automatically installs `.ttf`, `.otf`, and `.ttc` fonts from ZIP archives organised by source.  
+Fonts are tracked by source (Google Fonts, Fontesk, paid, etc.) and archived after installation so your library can be used to reinstall everything on a new or recovered machine.
 
-## Features:
-- Installs `.ttf` and `.otf` fonts from a specified folder, including font zip files.
-- Automatically unzips fonts if needed.
-- Keeps a record of installed fonts to prevent re-installation.
-- Logs every installation process.
+## Folder structure
 
-## Prerequisites:
-- **Windows PowerShell** (comes pre-installed on most Windows systems).
-- Administrator privileges to install fonts.
+```
+D:\data-hoarding-media\installers\fonts\   ← FontLibraryPath in config.json
+├── google\
+│   ├── roboto.zip                         ← new, will be installed
+│   └── installed\
+│       └── noto.zip                       ← already installed, kept as backup
+├── fontesk\
+│   └── installed\
+│       └── archivo.zip
+└── paid\
+    ├── new-purchase.zip
+    └── installed\
+```
 
-## Setup Instructions:
-1. **Navigate to your desired location using a terminal:**
-   - Use the `cd` command to change directories. For example:
-     - If you want to navigate to a folder named "Projects" on your C drive, use:
-       ```bash
-       cd C:\path\to\Projects
-       ```
-   - Replace `C:\path\to\Projects` with the actual path where you want to clone the repository.
+- Drop new font ZIPs into the **source subfolder root** (`google\`, `fontesk\`, etc.)
+- After installation the ZIP is **moved to `/installed`** — not deleted
+- Source subfolders are discovered automatically; add as many as you like
 
-2. **Clone the repository:**
-   Use the following command to clone the repository:
-   ```bash
-   git clone https://github.com/d3faultdata/InstantFontInstaller.git
+## Reinstall / new machine
 
-3. **Configure the font management settings:**
-   - The first time you run the installation script, you will be guided through the configuration process.
-   - During this process, specify the path where your font zip files will be stored.
+Just copy the entire library folder to the new machine and run the tool.  
+It scans `/installed` too, detects which fonts are missing from Windows, and reinstalls them automatically.
 
-4. **Run the font installation script:**
-   - Simply double-click the RunInstallFonts.bat file to execute the installation process.
+## Setup
 
-## Usage Instructions:
-- Place your font zip files in the folder specified in the `fontFolder` setting of your `config.json`.
-- Run the installation script by double-clicking the RunInstallFonts.bat file whenever you want to install the fonts from the folder.
+1. Copy `config-template.json` → `config.json`
+2. Set `FontLibraryPath` to your fonts library root
+3. Double-click `RunInstallFonts.bat`
 
-## Contributing:
-If you'd like to contribute to the project, please fork the repository and submit a pull request.
+On first run without a `config.json` you will be prompted to enter the path.
+
+## Requirements
+
+- Windows 10 / 11
+- PowerShell 5.1+ (built-in) or PowerShell 7+
+- Administrator privileges (the launcher requests elevation automatically)
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/d3faultdata/InstantFontInstaller/blob/main/LICENSE) file for details.
+
+MIT — see [LICENSE](LICENSE)

@@ -1,30 +1,36 @@
 @echo off
-:: Check for PowerShell 5.x
-if exist "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" (
-    set PowerShellPath=C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-) else (
-    :: Check for PowerShell 7
-    if exist "C:\Program Files\PowerShell\7\pwsh.exe" (
-        set PowerShellPath=C:\Program Files\PowerShell\7\pwsh.exe
-    ) else (
-        echo PowerShell is not installed or not found in default locations.
-        pause
-        exit /b
-    )
-)
+setlocal
 
-:: Display the PowerShell path
-echo Using PowerShell at: %PowerShellPath%
+:: If not already admin, relaunch this script elevated
+net session >nul 2>&1
+if %errorlevel% == 0 goto :run_script
 
-:: Request elevated permissions
-echo Requesting elevated permissions...
-"%PowerShellPath%" -Command "Start-Process '%PowerShellPath%' -ArgumentList '-ExecutionPolicy Bypass -File ""%~dp0InstallFonts.ps1""' -Verb RunAs"
+echo Requesting administrator privileges...
+powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs -Wait"
+exit /b
 
-:: Check if PowerShell was started successfully
-if errorlevel 1 (
-    echo Failed to start PowerShell. Check your installation.
-    pause
-    exit /b
-)
+:run_script
+where /q pwsh.exe 2>nul
+if %errorlevel% == 0 goto :use_pwsh
 
+where /q powershell.exe 2>nul
+if %errorlevel% == 0 goto :use_ps5
+
+echo PowerShell was not found. Please install it and try again.
 pause
+exit /b 1
+
+:use_pwsh
+set "PS=pwsh.exe"
+goto :run
+
+:use_ps5
+set "PS=powershell.exe"
+goto :run
+
+:run
+echo Using: %PS%
+echo.
+"%PS%" -NoProfile -ExecutionPolicy Bypass -File "%~dp0InstallFonts.ps1"
+pause
+endlocal

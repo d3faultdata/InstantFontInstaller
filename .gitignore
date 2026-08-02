@@ -1,0 +1,5 @@
+# User-specific config (created from config-template.json)
+config.json
+
+# Runtime output
+logs/
