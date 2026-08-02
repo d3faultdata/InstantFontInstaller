@@ -1,4 +1,4 @@
-# Instant Font Installer
+# Bulk Font Installer
 
 Automatically installs `.ttf`, `.otf`, and `.ttc` fonts from ZIP archives organised by source.
 Fonts are tracked by source (Google Fonts, Fontesk, paid, etc.) and archived after installation so your library can be used to reinstall everything on a new or recovered machine.

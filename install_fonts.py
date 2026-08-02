@@ -296,7 +296,12 @@ def install_font(font_path):
 
 
 def install_from_zip(zip_path, source_label):
-    """Install every not-yet-installed font from one ZIP. Return count installed."""
+    """Install every not-yet-installed font from one ZIP.
+
+    Returns a (installed_count, archivable) tuple. archivable is False when the
+    ZIP failed the safety check or could not be extracted, so the caller leaves
+    it in place (visible for inspection) instead of filing it into installed/.
+    """
     zip_file_name = os.path.basename(str(zip_path))
     zip_stem = Path(zip_path).stem
 
@@ -308,7 +313,7 @@ def install_from_zip(zip_path, source_label):
         )
         for issue in issues:
             write_log("[{0}]   {1}".format(source_label, issue), "WARN")
-        return 0
+        return 0, False
 
     temp_dir = Path(tempfile.mkdtemp(prefix="FontInstaller_{0}_".format(zip_stem)))
     try:
@@ -319,11 +324,11 @@ def install_from_zip(zip_path, source_label):
                 "[{0}] Failed to extract '{1}': {2}".format(source_label, zip_file_name, exc),
                 "ERROR",
             )
-            return 0
+            return 0, False
 
         if not extracted:
             write_log("[{0}] No font files found in '{1}'.".format(source_label, zip_file_name))
-            return 0
+            return 0, True
 
         installed_now = 0
         for font_path in extracted:
@@ -346,7 +351,7 @@ def install_from_zip(zip_path, source_label):
                     "[{0}] Failed to install '{1}': {2}".format(source_label, file_name, exc),
                     "ERROR",
                 )
-        return installed_now
+        return installed_now, True
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -416,7 +421,7 @@ def main():
                     label, zip_file.name, len(missing)
                 )
             )
-            count = install_from_zip(zip_file, label)
+            count, _ = install_from_zip(zip_file, label)
             total_installed += count
             if count < len(missing):
                 total_failed += len(missing) - count
@@ -440,13 +445,20 @@ def main():
                 total_skipped += len(font_names)
                 continue
 
-            count = install_from_zip(zip_file, label)
+            count, archivable = install_from_zip(zip_file, label)
             total_installed += count
             if count < len(missing):
                 total_failed += len(missing) - count
 
-            shutil.move(str(zip_file), str(installed_dir / zip_file.name))
-            write_log("[{0}] Archived '{1}' to /installed".format(label, zip_file.name))
+            if archivable:
+                shutil.move(str(zip_file), str(installed_dir / zip_file.name))
+                write_log("[{0}] Archived '{1}' to /installed".format(label, zip_file.name))
+            else:
+                write_log(
+                    "[{0}] Left '{1}' in place (failed safety check) - inspect or "
+                    "remove it.".format(label, zip_file.name),
+                    "WARN",
+                )
 
     refresh_font_cache()
 
